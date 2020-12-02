@@ -4,6 +4,12 @@ export const BEGIN_STROKE = "BEGIN_STROKE"
 export const UPDATE_STROKE = "UPDATE_STROKE"
 export const END_STROKE = "END_STROKE"
 
+// missing code that should be there by page 302
+//
+export const UNDO = "UNDO"
+export const REDO = "REDO"
+
+
 //pg295
 //
 export const SET_STROKE_COLOR = "SET_STROKE_COLOR"
@@ -26,6 +32,12 @@ export type Action =
     type: typeof SET_STROKE_COLOR
     payload: string
   }
+  | {
+    type: typeof UNDO
+  }
+  | {
+    type: typeof REDO
+  }
 
 // pg286 (action creators)
 //
@@ -37,6 +49,16 @@ export const updateStroke = (x: number, y: number) => {
 }
 export const endStroke = () => {
   return { type: END_STROKE }
+}
+
+// missing code that should be there by page 302
+//
+export const undo = () => {
+  return { type: UNDO }
+}
+
+export const redo = () => {
+  return { type: REDO }
 }
 
 // pg295

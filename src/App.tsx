@@ -13,6 +13,7 @@ import './App.css';
 import { clearCanvas, drawStroke, setCanvasSize } from './canvasUtils'; // pg294
 import { ColorPanel } from './ColorPanel';
 import { RootState } from './types';
+import { EditPanel } from './EditPanel';
 
 // missing from book text
 //
@@ -26,10 +27,26 @@ function App() {
   //
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  // pg290
+  // pg290, changed to fix problem at pg302
   //
-  const currentStroke = useSelector(currentStrokeSelector)
-  const isDrawing = !!currentStroke.points.length
+  const currentStroke = useSelector<RootState, RootState["currentStroke"]>(
+    (state: RootState) => state.currentStroke
+  )
+  // pg290, changed to fix problem at pg302
+  //
+  const isDrawing = useSelector<RootState>(
+    (state) => !!state.currentStroke.points.length
+  )
+
+  // missing (pg302):
+  //
+  const historyIndex = useSelector<RootState, RootState["historyIndex"]>(
+    (state) => state.historyIndex
+  )
+  const strokes = useSelector<RootState, RootState["strokes"]>(
+    (state: RootState) => state.strokes
+  )
+
   const getCanvasWithContext = (canvas = canvasRef.current) => { // pg293
     return { canvas, context: canvas?.getContext("2d") }
   }
@@ -51,6 +68,11 @@ function App() {
     )
   }, [currentStroke])
 
+  const endDrawing = () => { // pg292
+    if (isDrawing) {
+      dispatch(endStroke())
+    }
+  }
 
   const draw = ({ // pg291
     nativeEvent
@@ -64,6 +86,20 @@ function App() {
 
   // This useEffect was missing from the book text
   //
+  useEffect(() => {
+    const { canvas, context } = getCanvasWithContext()
+    if (!context || !canvas) {
+      return
+    }
+    requestAnimationFrame(() => {
+      clearCanvas(canvas)
+
+      strokes.slice(0, strokes.length - historyIndex).forEach((stroke) => {
+        drawStroke(context, stroke.points, stroke.color)
+      })
+    })
+  }, [historyIndex])
+
   useEffect(() => {
     const { canvas, context } = getCanvasWithContext()
     if (!canvas || !context) {
@@ -80,12 +116,6 @@ function App() {
     clearCanvas(canvas)
   }, [])
 
-  const endDrawing = () => { // pg292
-    if (isDrawing) {
-      dispatch(endStroke())
-    }
-  }
-
   // ColorPanel added to this layout on pg298
   //
   return (
@@ -98,6 +128,7 @@ function App() {
           <button aria-label="Close" />
         </div>
       </div>
+      <EditPanel />
       <ColorPanel />
       <canvas
         onMouseDown={startDrawing}
