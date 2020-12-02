@@ -11,6 +11,7 @@ import { beginStroke, updateStroke, endStroke } from "./actions"
 import logo from './logo.svg';
 import './App.css';
 import { clearCanvas, drawStroke, setCanvasSize } from './canvasUtils'; // pg294
+import { ColorPanel } from './ColorPanel';
 
 // missing from book text
 //
@@ -84,8 +85,10 @@ function App() {
     clearCanvas(canvas)
   }, [])
 
+  // ColorPanel added to this layout on pg298
+  //
   return (
-    // The update to embbed the canvas inside the div is missing from the book text
+    // The update to embed the canvas inside the div is missing from the book text
     //
     <div className="window">
       <div className="title-bar">
@@ -94,6 +97,7 @@ function App() {
           <button aria-label="Close" />
         </div>
       </div>
+      <ColorPanel />
       <canvas
         onMouseDown={startDrawing}
         onMouseUp={endDrawing}
