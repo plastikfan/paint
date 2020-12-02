@@ -51,9 +51,9 @@ export const ColorPanel = () => {
         {COLORS.map((color: string) => (
           <div
             key={color}
-            onClick={() => {onColorChange(color)}}
+            onClick={() => { onColorChange(color) }}
             className="color"
-            style={{ backgroundColor: color}}
+            style={{ backgroundColor: color }}
           >
           </div>
         ))}

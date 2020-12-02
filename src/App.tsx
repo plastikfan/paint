@@ -12,6 +12,7 @@ import logo from './logo.svg';
 import './App.css';
 import { clearCanvas, drawStroke, setCanvasSize } from './canvasUtils'; // pg294
 import { ColorPanel } from './ColorPanel';
+import { RootState } from './types';
 
 // missing from book text
 //
@@ -19,6 +20,8 @@ const WIDTH = 1024
 const HEIGHT = 768
 
 function App() {
+  const dispatch = useDispatch()
+  
   // step1, pg282
   //
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -27,34 +30,15 @@ function App() {
   //
   const currentStroke = useSelector(currentStrokeSelector)
   const isDrawing = !!currentStroke.points.length
-
-  const dispatch = useDispatch()
+  const getCanvasWithContext = (canvas = canvasRef.current) => { // pg293
+    return { canvas, context: canvas?.getContext("2d") }
+  }
 
   const startDrawing = ({ // pg291
     nativeEvent   // NB: nativeEvent is being destructured from React.MouseEvent<HTMLCanvasElement>
   }: React.MouseEvent<HTMLCanvasElement>) => {
     const { offsetX, offsetY } = nativeEvent
     dispatch(beginStroke(offsetX, offsetY))
-  }
-
-  const endDrawing = () => { // pg292
-    if (isDrawing) {
-      dispatch(endStroke())
-    }
-  }
-
-  const draw = ({ // pg291
-    nativeEvent
-  }: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing) {
-      return
-    }
-    const { offsetX, offsetY } = nativeEvent
-    dispatch(updateStroke(offsetX, offsetY))
-  }
-
-  const getCanvasWithContext = (canvas = canvasRef.current) => { // pg293
-    return { canvas, context: canvas?.getContext("2d") }
   }
 
   useEffect(() => { // pg293
@@ -66,6 +50,17 @@ function App() {
       drawStroke(context, currentStroke.points, currentStroke.color)
     )
   }, [currentStroke])
+
+
+  const draw = ({ // pg291
+    nativeEvent
+  }: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!isDrawing) {
+      return
+    }
+    const { offsetX, offsetY } = nativeEvent
+    dispatch(updateStroke(offsetX, offsetY))
+  }
 
   // This useEffect was missing from the book text
   //
@@ -84,6 +79,12 @@ function App() {
 
     clearCanvas(canvas)
   }, [])
+
+  const endDrawing = () => { // pg292
+    if (isDrawing) {
+      dispatch(endStroke())
+    }
+  }
 
   // ColorPanel added to this layout on pg298
   //
