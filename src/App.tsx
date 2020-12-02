@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from 'react';
 // pg289/290
 //
 import { useSelector, useDispatch } from "react-redux"
-import { currentStrokeSelector } from "./selectors"
 
 // missing import ... from pg291?
 //

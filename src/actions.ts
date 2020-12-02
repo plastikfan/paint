@@ -26,11 +26,11 @@ export type Action =
     payload: Point
   }
   | {
-    type: typeof END_STROKE
-  }
-  | {
     type: typeof SET_STROKE_COLOR
     payload: string
+  }
+  | {
+    type: typeof END_STROKE
   }
   | {
     type: typeof UNDO
